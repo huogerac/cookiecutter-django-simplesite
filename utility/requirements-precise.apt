@@ -1,0 +1,49 @@
+## basic build dependencies of various Django apps for Ubuntu 12.04.5 LTS (Precise Pangolin)
+
+## build-essential metapackage install: make, gcc, g++,
+build-essential
+
+## Required to translate
+gettext
+
+## Utility
+openssh-server
+vim
+
+## GIT
+git-core
+
+## Python
+python-dev
+
+## Virtualenv
+python-pip
+virtualenv
+
+## Pillow
+#python-setuptools
+#zlib1g-dev
+#libtiff4-dev
+#libjpeg8-dev
+#zlib1g-dev
+#libfreetype6-dev
+#liblcms2-dev
+#libwebp-dev
+#tcl8.5-dev
+#tk8.5-dev
+#python-tk
+#python-imaging
+
+## LXML
+#libxml2-dev
+#libxslt1-dev
+
+## MYSQL
+#mysql-server
+#libmysqlclient-dev
+
+## Postgresql and psycopg2 dependencies
+#libpq-dev
+
+## Django-extensions
+#graphviz-dev

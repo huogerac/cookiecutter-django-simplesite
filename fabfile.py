@@ -50,7 +50,7 @@ def staging():
     "Setup staging server"
     env.environment = 'staging'
     env.dev_mode = False
-    env.server_url = 'simplesite.na-inter.net'
+    env.server_url = '{{ cookiecutter.project_slug }}.na-inter.net'
     env.hosts = [env.server_url, ]
     env.user = 'mechanics'
     env.password = __get_env_pass__('staging')
