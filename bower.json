@@ -1,0 +1,13 @@
+{
+  "name": "simplesite",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "#3.1.1",
+    "bootstrap": "^3.3.7",
+    "modernizr": "~2.6.2",
+    "animate.css": "~3.5.1",
+    "fontawesome": "~4.6.3",
+    "html5shiv": "#3.7.3",
+    "respond": "#1.4.2"
+  }
+}

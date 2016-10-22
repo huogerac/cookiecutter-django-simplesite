@@ -1,0 +1,77 @@
+ {% load static %}
+ 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- 3rdcss block - via bower or other internal library -->
+    {% block 3rdcss %}
+    <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'animate.css/animate.min.css' %}" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,300,500,700,800,900,600,200' rel='stylesheet' type='text/css'>
+    {% endblock 3rdcss %}
+
+    <!-- custom css block -->
+    {% block css %}
+    <link href="{% static 'css/theme-style.css' %}" rel="stylesheet">
+
+    {% endblock css %}
+
+    <!-- extracss block -->
+    {% block extracss %}{% endblock extracss %}
+
+    <!-- USE THE js_top BLOCK to add javascripts here -->
+    {% block js_top %}
+      <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+      <!--[if lt IE 9]>
+          <script src="js/html5shiv.js"></script>
+          <script src="js/respond.min.js"></script>
+      <![endif]-->
+    {% endblock %}
+
+  </head>
+
+  {% block body %}
+    <body id="top">
+
+      <!-- some JS such us google analytics / zen desk needs to be here -->
+      {% block pre_body %}{% endblock pre_body %}
+
+      <!-- navbar or some fix background can be added here -->
+      {% block header_area %}{% endblock header_area %}
+
+      {% block content_area %}
+
+        <!-- the custom page content should be here -->
+        {% block content %}{% endblock content %}
+
+      {% endblock content_area %}
+
+      {% block footer_area %}{% endblock footer_area %}
+
+      {% block post_body %}{% endblock post_body %}
+
+      <!-- 3rd party js - bower libs -->
+      {% block 3rdjs %}
+      <script src="{% static 'modernizr/modernizr.js' %}"></script>
+      <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
+      {% endblock 3rdjs %}
+
+      <!-- internal js -->
+      {% block js %}{% endblock js %}
+
+      <!-- custom or extra js for the current page -->
+      {% block extrajs %}{% endblock extrajs %}
+
+    </body>
+  {% endblock body %}
+
+</html>
