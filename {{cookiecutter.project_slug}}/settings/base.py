@@ -201,7 +201,7 @@ WSGI_APPLICATION = '{{ cookiecutter.project_slug }}.wsgi.application'
 # ------------------------------------------------------------------------------
 #AUTHENTICATION_BACKENDS = ()
 
-# Location of root django.contrib.admin URL, use {% url 'admin:index' %}
+# Location of root django.contrib.admin URL, use {% raw %}{% url 'admin:index' %}{% endraw %}
 ADMIN_URL = r'^admin/'
 
 # SECRET CONFIGURATION
