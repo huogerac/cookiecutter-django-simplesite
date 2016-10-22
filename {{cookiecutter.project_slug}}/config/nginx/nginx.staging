@@ -1,3 +1,4 @@
+{% raw %}
 upstream {{ project_name }}_{{ server_url }}_server {
     server unix:/tmp/{{ project_name }}_{{ server_url }}_{{ environment }}.socket;
 }
@@ -23,3 +24,4 @@ server {
     }
 
 }
+{% endraw %}
