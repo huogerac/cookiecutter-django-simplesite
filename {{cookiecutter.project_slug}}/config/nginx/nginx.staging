@@ -9,11 +9,11 @@ server {
     access_log /var/log/nginx/{{ project_name }}_{{ server_url }}.access.log;
 
     location /static {
-        alias {{ project_repo_folder }}/{{ project_name }}/apps/frontend/assets;
+        alias {{ root_dir }}/staticfiles;
     }
 
     location /media {
-        alias {{ project_repo_folder }}/{{ project_name }}/media;
+        alias {{ project_dir }}/media;
         expires 10m;
         autoindex off;
     }    

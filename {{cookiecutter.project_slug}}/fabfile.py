@@ -17,11 +17,11 @@ from fabric.contrib import django
 BASE_DIR = dirname(__file__)  #Project or Repo Base Dir
 VIRTUALENV_DIR = dirname(dirname(__file__))
 
-REPO_FOLDER_NAME = 'nswmicrosites_repo'
-PROJECT_NAME = 'nswmicrosites'
+ROOT_SRC_DIR = '{{ cookiecutter.project_slug }}_src'
+PROJECT_NAME = '{{ cookiecutter.project_slug }}'
 
 ## UPDATE HERE: Enter below the repository URL that will receive your new project code
-PROJECT_REPO = 'git@djenie.git.beanstalkapp.com:/djenie/nswmicrosites.git'
+PROJECT_REPO = '{{ cookiecutter.repository_url }}'
 
 ## Here are the default NGINX and UPSTAR directories
 NGINX_TARGET_FOLDER = '/etc/nginx'
@@ -52,23 +52,20 @@ def staging():
     env.dev_mode = False
     env.server_url = '{{ cookiecutter.project_slug }}.na-inter.net'
     env.hosts = [env.server_url, ]
-    env.user = 'mechanics'
+    env.user = '{{ cookiecutter.deploy_username }}'
     env.password = __get_env_pass__('staging')
-    env.targetdir = '/home/mechanics/envs'
+    env.targetdir = '/home/{{ cookiecutter.deploy_username }}/envs'
 
 
 def production():
     "Setup production server"
     env.environment = 'production'
     env.dev_mode = False
-    ## UPDATE HERE: Enter below the staging server DOMAIN
-    env.hosts = ["nswmicrosites.yourdomain.com", ]
-    env.server_url = 'nswmicrosites.yourdomain.com'
-    ## UPDATE HERE: Enter below a valid user that has SSH access to the above server
-    env.user = 'user'
+    env.hosts = [env.server_url, ]
+    env.server_url = '{{ cookiecutter.project_slug }}.na-inter.net'
+    env.user = '{{ cookiecutter.deploy_username }}'
     env.password = __get_env_pass__('production')
-    ## UPDATE HERE: Enter below the staging directory where the virtualenv will be created
-    env.targetdir = '/home/user/envs'
+    env.targetdir = '/home/{{ cookiecutter.deploy_username }}/envs'
 
 
 
@@ -81,7 +78,7 @@ def _create_virtualenv(targetdir, virtualenv_folder):
 def _clone_repository(targetdir, virtualenv_folder ):
     print(green("**** Cloning Repository"))
     with cd(targetdir):
-        run("cd %s; git clone %s %s" % (virtualenv_folder, PROJECT_REPO, REPO_FOLDER_NAME))
+        run("cd %s; git clone %s %s" % (virtualenv_folder, PROJECT_REPO, ROOT_SRC_DIR))
 
 def _install_project_dependencies(projectdir):
     print(green("**** Installing project dependencies"))
@@ -128,7 +125,7 @@ def bootstrap():
     print(green("Bootstrap:: targetdir=%s" % env.targetdir))
 
     virtualenv_folder = "%s_%s" % (PROJECT_NAME, env.environment)
-    repodir = join(env.targetdir, virtualenv_folder, REPO_FOLDER_NAME)
+    repodir = join(env.targetdir, virtualenv_folder, ROOT_SRC_DIR)
     projectdir = join(repodir, PROJECT_NAME)
 
     _create_virtualenv(env.targetdir, virtualenv_folder)
@@ -179,7 +176,7 @@ def deploy():
     print(green("Deploying :: %s (%s)" % (env.environment, env.hosts)))
 
     virtualenv_folder = "%s_%s" % (PROJECT_NAME, env.environment)
-    repodir = join(env.targetdir, virtualenv_folder, REPO_FOLDER_NAME)
+    repodir = join(env.targetdir, virtualenv_folder, ROOT_SRC_DIR)
     projectdir = join(repodir, PROJECT_NAME)
 
     _update_code(projectdir)
@@ -199,7 +196,7 @@ def createsite(subdomain='new'):
     """
     print(green("**** Creatig new site"))
     virtualenv_folder = "%s_%s" % (PROJECT_NAME, env.environment)
-    repodir = join(env.targetdir, virtualenv_folder, REPO_FOLDER_NAME)
+    repodir = join(env.targetdir, virtualenv_folder, ROOT_SRC_DIR)
     projectdir = join(repodir, PROJECT_NAME)
 
     domain = '%s.webfoundry.com.au' % subdomain

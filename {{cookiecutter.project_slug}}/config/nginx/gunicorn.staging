@@ -8,13 +8,13 @@ respawn
 setuid {{ user }}
 env DJANGO_SETTINGS_MODULE={{ project_name }}.settings.{{ environment }}
 
-env NSWMICROSITES_DB_NAME='nswmicrosites'
-env NSWMICROSITES_DB_USER='nswmicrosites'
-env NSWMICROSITES_DB_PASSWORD=''
-env NSWMICROSITES_DB_HOST='localhost'
+env {{ project_name_upper }}_DB_NAME='project_name'
+env {{ project_name_upper }}_DB_USER='project_name'
+env {{ project_name_upper }}_DB_PASSWORD='s3t4p4ssw0rdh3r3'
+env {{ project_name_upper }}_DB_HOST='localhost'
 
-chdir {{ project_base_folder }}
-exec ../../bin/gunicorn {{ project_name }}.wsgi:application \
+chdir {{ root_dir }}
+exec ../bin/gunicorn {{ project_name }}.wsgi:application \
   --name "{{ project_name }}_{{ environment }}" \
   --workers 1 \
   --env DJANGO_SITE_ID={{ site_id }} \

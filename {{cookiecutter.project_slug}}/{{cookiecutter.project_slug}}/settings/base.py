@@ -15,15 +15,14 @@ import sys
 import os
 
 from os.path import join, abspath, dirname
-from easy_thumbnails.conf import Settings as thumbnail_settings
 
 # PATH vars
 here = lambda *x: join(abspath(dirname(__file__)), *x)
-PROJECT_ROOT = here("..")
-projectdir = lambda *x: join(abspath(PROJECT_ROOT), *x)
+PROJECT_DIR = here("..")
+projectdir = lambda *x: join(abspath(PROJECT_DIR), *x)
 
 ROOT_DIR = environ.Path(__file__) - 3 # ({{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}/settings/base.py - 3 = {{ cookiecutter.project_slug }}/)
-BASE_DIR = ROOT_DIR  # Change this, used inside the deploy
+
 rootdir = lambda *x: join(abspath( str(ROOT_DIR) ), *x)
 
 env = environ.Env()
