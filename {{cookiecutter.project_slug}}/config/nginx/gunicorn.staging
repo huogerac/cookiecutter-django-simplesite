@@ -8,8 +8,8 @@ respawn
 setuid {{ user }}
 env DJANGO_SETTINGS_MODULE={{ project_name }}.settings.{{ environment }}
 
-env {{ project_name_upper }}_DB_NAME='project_name'
-env {{ project_name_upper }}_DB_USER='project_name'
+env {{ project_name_upper }}_DB_NAME='{{ project_name }}'
+env {{ project_name_upper }}_DB_USER='{{ project_name }}'
 env {{ project_name_upper }}_DB_PASSWORD='s3t4p4ssw0rdh3r3'
 env {{ project_name_upper }}_DB_HOST='localhost'
 
@@ -18,7 +18,7 @@ exec ../bin/gunicorn {{ project_name }}.wsgi:application \
   --name "{{ project_name }}_{{ environment }}" \
   --workers 1 \
   --env DJANGO_SITE_ID={{ site_id }} \
-  --bind unix:/tmp/{{ project_name }}_{{ server_url }}_{{ environment }}.socket \
+  --bind unix:/tmp/{{ project_name }}_{{ environment }}.socket \
   --log-level=warning \
-  --log-file={{ virtualenv_folder }}/logs/{{ project_name }}_{{ server_url }}_{{ environment }}-gunicorn.log 2>> {{ virtualenv_folder }}/logs/{{ project_name }}_{{ server_url }}_{{ environment }}-gunicorn.log
+  --log-file={{ virtualenv_folder }}/logs/{{ project_name }}_{{ environment }}-gunicorn.log 2>> {{ virtualenv_folder }}/logs/{{ project_name }}_{{ environment }}-gunicorn.log
 {% endraw %}

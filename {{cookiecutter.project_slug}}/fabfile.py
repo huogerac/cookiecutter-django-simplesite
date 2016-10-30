@@ -83,40 +83,38 @@ def _clone_repository(targetdir, virtualenv_folder ):
 def _install_project_dependencies(projectdir):
     print(green("**** Installing project dependencies"))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('pip install -r ../requirements/%(environment)s.pip' % env)
-            run('./manage.py bower_install --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
+            run('pip install -r requirements/%(environment)s.txt' % env)
+            run('bower install')
 
 def _prepare_database(projectdir):
     print(green("**** Preparing Database"))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('./manage.py syncdb --noinput --no-initial-data --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
-            run('./manage.py migrate --all --no-initial-data --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
-            run('./manage.py migrate --all --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
+            run('./manage.py migrate --no-initial-data --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
 
 
 def _generate_nginx_entry(projectdir):
     print(green("**** Preparing NGINX entry"))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('./manage.py nginxentry --env %s --url %s --nginx %s --settings=%s.settings.%s' % (env.environment, env.server_url, NGINX_TARGET_FOLDER, PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
+            run('./manage.py nginxentry --env=%s --url=%s --nginx=%s --settings=%s.settings.%s' % (env.environment, env.server_url, NGINX_TARGET_FOLDER, PROJECT_NAME, env.environment))
 
 
 def _generate_gunicorn_entry(projectdir, site_id='1'):
     print(green("**** Preparing GUNICORN entry: %s" % site_id))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('./manage.py gunicornentry --env %s --user %s --site %s --settings=%s.settings.%s' % (env.environment, env.user, site_id, PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
+            run('./manage.py gunicornentry --env=%s --user=%s --site=%s --settings=%s.settings.%s' % (env.environment, env.user, site_id, PROJECT_NAME, env.environment))
 
 def _enable_nginx(projectdir):
     print(green("**** Enableing NGINX"))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('./manage.py nginxenable --env %s --nginx %s --settings=%s.settings.%s' % (env.environment, NGINX_TARGET_FOLDER, PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
+            run('./manage.py nginxenable --env=%s --nginx=%s --settings=%s.settings.%s' % (env.environment, NGINX_TARGET_FOLDER, PROJECT_NAME, env.environment))
 
 def _prepare_log_folder(targetdir, virtualenv_folder):
-    print(green("**** Preparing Log folder"))
+    print(green("**** Preparing Log folder: %s" % virtualenv_folder))
     with cd(targetdir):
         run('mkdir -p %s/logs' % virtualenv_folder)
 
@@ -130,12 +128,13 @@ def bootstrap():
 
     _create_virtualenv(env.targetdir, virtualenv_folder)
     _clone_repository(env.targetdir, virtualenv_folder)
-    _install_project_dependencies(projectdir)
-    _prepare_database(projectdir)
+    _install_project_dependencies(repodir)
+    _prepare_database(repodir)
+
     if not env.dev_mode:
-        _generate_nginx_entry(projectdir)
-        _generate_gunicorn_entry(projectdir)
-        _enable_nginx(projectdir)
+        _generate_nginx_entry(repodir)
+        _generate_gunicorn_entry(repodir)
+        _enable_nginx(repodir)
         _prepare_log_folder(env.targetdir, virtualenv_folder)
 
     print(green("bootstrap DONE"))
@@ -151,14 +150,13 @@ def _update_code(projectdir):
 def _migrate_database(projectdir):
     print(green("**** Migrating Database"))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('./manage.py migrate --all --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
+            run('./manage.py migrate --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
 
 def _update_assets(projectdir):
     print(green("**** Updating Assets (static files)"))
     with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            run('./manage.py generate_colors --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
+        with prefix('source ../bin/activate'):
             run('./manage.py collectstatic --noinput --settings=%s.settings.%s' % (PROJECT_NAME, env.environment))
 
 def _reload_servers():
@@ -180,33 +178,10 @@ def deploy():
     projectdir = join(repodir, PROJECT_NAME)
 
     _update_code(projectdir)
-    _install_project_dependencies(projectdir)
-    _migrate_database(projectdir)
+    _install_project_dependencies(repodir)
+    _migrate_database(repodir)
     if not env.dev_mode:
-        _update_assets(projectdir)
+        _update_assets(repodir)
         _reload_servers()
     
     print(green("Deploy DONE"))
-
-
-def createsite(subdomain='new'):
-    """ 
-    Creates a new site entry 
-    Usage: fab environment createsite:subdomain='newsite'
-    """
-    print(green("**** Creatig new site"))
-    virtualenv_folder = "%s_%s" % (PROJECT_NAME, env.environment)
-    repodir = join(env.targetdir, virtualenv_folder, ROOT_SRC_DIR)
-    projectdir = join(repodir, PROJECT_NAME)
-
-    domain = '%s.webfoundry.com.au' % subdomain
-
-    with cd(projectdir):
-        with prefix('source ../../bin/activate'):
-            site_id = run('./manage.py createsite --domain=%s --name=%s --settings=%s.settings.%s' % (domain, domain, PROJECT_NAME, env.environment))
-            if not env.dev_mode:
-                _generate_nginx_entry(projectdir)
-                _generate_gunicorn_entry(projectdir, site_id)
-                _enable_nginx(projectdir)
-                _reload_servers()
-
